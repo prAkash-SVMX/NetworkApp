@@ -19,14 +19,13 @@ const App = () => {
     
     const unsubscribe = NetInfo.addEventListener((state) => {
       setNetInfo(
-        `Connection type: ${state.type}
-        Is connected?: ${state.isConnected}
-        IP Address: ${state.details.ipAddress}`
+        `Connection type: ${state.type === 'cellular' && state.details ? `${state.type} (${state.details.cellularGeneration && ''})` : (state.type !== '' ? state.type : 'N/A')}
+        \nConnection Status: ${state.isConnected ? `Connected` : `Disconnected`}
+        \nInternet Reachable: ${state.isInternetReachable ? `Yes` : `No`}`
       );
     });
 
     return () => {
-    
       unsubscribe();
     };
   }, []);
@@ -34,16 +33,10 @@ const App = () => {
   const getNetInfo = () => {
    
     NetInfo.fetch().then((state) => {
-      alert(
-        `Connection type: ${state.type}
-        Is connected?: ${state.isConnected}
-        IP Address: ${state.details.ipAddress}
-        SSID : ${state.details.ssid}
-        Strenth :${state.details.strength}
-        Subnet :${state.details.subnet}
-
-        `
-
+      setNetInfo(
+        `Connection type: ${state.type === 'cellular' && state.details ? `${state.type} (${state.details.cellularGeneration && ''})` : (state.type !== '' ? state.type : 'N/A')}
+        \nConnection Status: ${state.isConnected ? `Connected` : `Disconnected`}
+        \nInternet Reachable: ${state.isInternetReachable ? `Yes` : `No`}`
       );
     });
   };
@@ -52,15 +45,13 @@ const App = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
         <Text style={styles.header}>
-          React Native NetInfo
-          {'\n'}
-          To Get NetInfo information
+          Network Information
         </Text>
         <Text style={styles.textStyle}>
           {/*Here is NetInfo to get device type*/}
           {netInfo}
         </Text>
-        <Button title="Get more detailed Info" onPress={getNetInfo} color="#841584" />
+        <Button title="Refresh" onPress={getNetInfo} color="#841584" />
       </View>
     </SafeAreaView>
   );
